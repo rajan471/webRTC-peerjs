@@ -1,0 +1,80 @@
+// jshint ignore: start
+/* eslint-disable */
+(function(){
+    var socket = io('http://localhost:3001');
+    navigator.getUserMedia = navigator.getUserMedia || 
+        navigator.mozGetUserMedia ||
+        navigator.webkitGetUserMedia || 
+        navigator.msGetUserMedia;
+
+    if(navigator.getUserMedia){
+        var constraints = {
+            audio : false,
+            video : {
+                mandatory: {
+                    height: 720,
+                    width: 1280
+                }
+            }
+        };
+
+        var successCallback = function (stream) {
+            // alert(location.hash==='#init');
+            var peer = new SimplePeer({ initiator: true, stream: stream, chanel:'123' })
+            var receivingPeer = new SimplePeer({chanel:'123'});
+
+            var camVideo = document.getElementById('camVideo');
+            if(camVideo){
+                camVideo.srcObject = stream;
+                camVideo.play();
+            } 
+
+            peer.on('signal', function (data) {
+                console.log('sendingPeer', data);
+                // socket.emit('stream1', data);
+                receivingPeer.signal(data);
+            });
+            receivingPeer.on('signal', function (data) {
+                peer.signal(data)
+                // socket.emit('stream1', data);
+                console.log('receivingPeer', data);
+            })
+            
+            // socket.on('videofeed1', function(data){
+            //     console.log(data);
+            //     receivingPeer.signal(data);
+            // })
+            // socket.on('videofeed2', function(data){
+            //     console.log(data);
+            //     peer.signal(data);
+            // })
+            receivingPeer.on('stream', function (stream) {
+                // got remote video stream, now let's show it in a video tag 
+                console.log('remoteStreaming');
+                var revievedVideo = document.getElementById('revievedVideo');
+                
+                if(revievedVideo){
+                    revievedVideo.srcObject = stream;
+                    revievedVideo.play();
+                }
+            })
+            peer.on('stream', function (stream){
+                console.log('localStreaming');
+                var camVideo = document.getElementById('camVideo');
+                if(camVideo){
+                    camVideo.srcObject = stream;
+                    camVideo.play();
+                } 
+    
+            })
+        }
+        var errorCallback = function (error) {
+            document.getElementById("error").innerHTML = JSON.stringify(error);
+        };
+        navigator.getUserMedia(
+            constraints,
+            successCallback,
+            errorCallback
+        );
+    }
+}());

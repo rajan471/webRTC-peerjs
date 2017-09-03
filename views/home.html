@@ -1,0 +1,32 @@
+<!DOCTYPE HTML>
+<html>
+    <head>
+        <link rel="stylesheet" href="/stylesheets/style.css">  
+        <script src="/javascripts/socket-io.js"></script>
+        <script src="http://cdn.peerjs.com/0.3/peer.js"></script>
+    </head>
+    <body>
+        <video id="revievedVideo"></video>
+        <video id="camVideo"></video>
+        <div id="overlay">
+            <form name="joinForm" id="joinForm">
+                <input type="text" name="roomno" value="<%= roomid %>">
+                <input type="submit" value="Join">
+            </form>
+        </div>
+        <p id="error"></p>
+        <% if (roomid) { %>
+            <script src="/javascripts/caller.js"></script>
+        <% } else { %>
+            <script src="/javascripts/recipient.js"></script>
+        <% } %>
+        <script>
+            joinForm.addEventListener('submit', joinRooom)
+            function joinRooom(e){
+                e.preventDefault();
+                var roomId = joinForm.roomno.value;
+                initializeChat(roomId);
+            }                
+        </script>
+    </body>
+</html>

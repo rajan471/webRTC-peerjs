@@ -1,0 +1,22 @@
+{
+  "name": "webrtc",
+  "version": "0.0.0",
+  "private": true,
+  "scripts": {
+    "start": "nodemon ./bin/www"
+  },
+  "dependencies": {
+    "body-parser": "~1.17.1",
+    "cookie-parser": "~1.4.3",
+    "debug": "~2.6.3",
+    "ejs": "^2.5.7",
+    "express": "~4.15.2",
+    "morgan": "~1.8.1",
+    "options": "0.0.6",
+    "peer": "^0.2.8",
+    "peerjs-server": "^0.2.9",
+    "simple-peer": "^8.1.1",
+    "socket.io": "^2.0.3",
+    "ws": "^3.1.0"
+  }
+}

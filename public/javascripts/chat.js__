@@ -1,0 +1,50 @@
+// jshint ignore: start
+/* eslint-disable */
+function initializeChat(roomId){
+    
+    var peer = new Peer('123456789', {host: 'localhost', port: 9000, path: '/conference'});
+
+    peer.on('open', function(id) {
+        console.log('My peer ID is: ' + id);
+    });
+    console.log(peer);
+    
+    navigator.getUserMedia = navigator.getUserMedia || 
+        navigator.mozGetUserMedia ||
+        navigator.webkitGetUserMedia || 
+        navigator.msGetUserMedia;
+
+    if(navigator.getUserMedia){
+        document.getElementById('overlay').style.display = 'none';
+        var constraints = {
+            audio : false,
+            video : {
+                mandatory: {
+                    height: 720,
+                    width: 1280
+                }
+            }
+        };
+
+        var successCallback = function (stream) {
+            var camVideo = document.getElementById('camVideo');
+            if(camVideo){
+                camVideo.srcObject = stream;
+                camVideo.play();
+            } 
+            peer.on('open', function(id) {
+                console.log('My peer ID is: ' + id);
+            });
+        }
+        var errorCallback = function (error) {
+            document.getElementById("error").innerHTML = JSON.stringify(error);
+        };
+        navigator.getUserMedia(
+            constraints,
+            successCallback,
+            errorCallback
+        );
+    }else{
+        document.getElementById('error').innerHTML = 'WebRTC not supported on this device.'
+    }
+}
